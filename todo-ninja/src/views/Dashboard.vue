@@ -3,6 +3,21 @@
 		<h1 class="title grey--text">Dashboard</h1>
 
 		<v-container class="my-5">
+			<v-layout row class="ma-0 mb-3">
+				<v-btn small depressed class="grey--text" @click="sortBy('title')">
+					<v-icon left small>folder</v-icon>
+					<span class="caption text-lowercase">Sort by Title</span>
+				</v-btn>
+				<v-btn small depressed class="grey--text ml-2" @click="sortBy('person')">
+					<v-icon left small>person</v-icon>
+					<span class="caption text-lowercase">Sort by Person</span>
+				</v-btn>
+				<v-btn small depressed class="grey--text ml-2" @click="sortBy('status')">
+					<v-icon left small>history</v-icon>
+					<span class="caption text-lowercase">Sort by Status</span>
+				</v-btn>
+			</v-layout>
+
 			<v-card tile flat class="grey lighten-4" v-for="project in projects" :key="project.title">
 				<v-layout row wrap :class="`ma-0 px-6 py-4 project ${project.status}`">
 					<v-flex xs12 md6>
@@ -18,8 +33,9 @@
 						<div>{{ project.due }}</div>
 					</v-flex>
 					<v-flex xs12 sm4 md2>
-						<div class="caption grey--text">Status</div>
-						<div>{{ project.status }}</div>
+						<div class="text-right">
+							<v-chip label :class="`mt-1 white--text caption ${project.status}`">{{ project.status }}</v-chip>
+						</div>
 					</v-flex>
 				</v-layout>
 
@@ -34,6 +50,7 @@ export default {
 	name: 'Dashboard',
 	data() {
 		return {
+			sortData: ['Title', 'Person', 'Due', 'Status'],
 			projects: [
 				{
 					title: 'Design a new website',
@@ -70,6 +87,12 @@ export default {
 			],
 		};
 	},
+
+	methods: {
+		sortBy(value) {
+			this.projects.sort((a, b) => (a[value] < b[value] ? -1 : 1));
+		},
+	},
 };
 </script>
 
@@ -82,5 +105,14 @@ export default {
 }
 .project.overdue {
 	border-left: 4px solid tomato;
+}
+.theme--light.v-chip:not(.v-chip--active).complete {
+	background: #3cd1c2;
+}
+.theme--light.v-chip:not(.v-chip--active).ongoing {
+	background: #ffaa2c;
+}
+.theme--light.v-chip:not(.v-chip--active).overdue {
+	background: #f83e70;
 }
 </style>
