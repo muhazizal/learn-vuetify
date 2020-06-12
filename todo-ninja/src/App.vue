@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <NavbarApp></NavbarApp>
+    <navbar-app></navbar-app>
 
     <v-content class="ma-5">
       <router-view></router-view>
