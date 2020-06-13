@@ -3,6 +3,8 @@
 		<template v-slot:activator="{ on, attrs }">
 			<v-btn depressed class="success mb-4" v-bind="attrs" v-on="on">Add new project</v-btn>
 		</template>
+
+		<!-- Add New Project -->
 		<v-card>
 			<v-card-title>Add new project</v-card-title>
 			<v-card-text>
@@ -19,10 +21,10 @@
 					<v-textarea label="Information" v-model="content" prepend-icon="edit" :rules="textRules"></v-textarea>
 
 					<!-- Date Picker -->
-					<v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="290px">
+					<v-dialog ref="dialog" v-model="modal" :return-value.sync="due" persistent width="290px">
 						<template v-slot:activator="{ on, attrs }">
 							<v-text-field
-								:value="date"
+								:value="due"
 								label="Due date"
 								prepend-icon="event"
 								readonly
@@ -31,14 +33,14 @@
 								:rules="dateRules"
 							></v-text-field>
 						</template>
-						<v-date-picker v-model="date" scrollable>
+						<v-date-picker v-model="due" scrollable>
 							<v-spacer></v-spacer>
 							<v-btn text color="primary" @click="modal = false">Cancel</v-btn>
-							<v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+							<v-btn text color="primary" @click="$refs.dialog.save(due)">OK</v-btn>
 						</v-date-picker>
 					</v-dialog>
 
-					<!-- Submit -->
+					<!-- Submit Project -->
 					<v-flex row justify-center class="mt-3">
 						<v-btn depressed class="success" @click="submit" :loading="loading">
 							<span class="mr-3">Add Project</span>
@@ -59,7 +61,7 @@ export default {
 		return {
 			title: '',
 			content: '',
-			date: null,
+			due: null,
 			modal: false,
 			textRules: [v => !!v || 'Field is required', v => (v && v.length >= 3) || 'Minimum length is 3 characters'],
 			dateRules: [v => !!v || 'Date is required'],
@@ -69,6 +71,7 @@ export default {
 	},
 
 	methods: {
+		// Submit Project
 		submit() {
 			if (this.$refs.form.validate()) {
 				this.loading = true;
@@ -76,7 +79,7 @@ export default {
 				const project = {
 					title: this.title,
 					content: this.content,
-					date: this.date,
+					due: this.due,
 					person: 'Muhazizal',
 					status: 'ongoing',
 				};
@@ -85,6 +88,8 @@ export default {
 					.then(() => {
 						this.dialog = false;
 						this.loading = false;
+						this.$refs.form.reset();
+						this.$emit('projectAdded');
 					})
 					.catch(() => console.log('failed'));
 			}
